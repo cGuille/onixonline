@@ -3,20 +3,33 @@
 set -eu
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
 source "$SCRIPT_DIR/config.bash"
 
+# Create a temporary directory to hold the build artefacts
 TMP_DIR="$(mktemp --directory "$SCRIPT_DIR"/TMP_BUILD_XXXXXXXXXX)"
 
+# Download and the ONIX specifications archive and unzip it
 wget "$SPEC_URL" --output-document="$TMP_DIR/archive.zip"
-
 unzip -d "$TMP_DIR/archive.d" "$TMP_DIR/archive.zip"
 
 CONTENTS="$(ls -d "$TMP_DIR/archive.d/ONIX_for_Books_Release"*'_html_Best_Practice+codes_Issue_'*)"
-ls "$CONTENTS/" | grep -vE '^index.html$' | php "$SCRIPT_DIR/index.phtml" > "$CONTENTS/index.html"
 
+genindex() { # generate an index file for a given directory
+    ls "$1" | grep -vE '^index.html$' | php "$SCRIPT_DIR/index.phtml" > "$1/index.html"
+}
+
+# Generate index page for the root directory
+genindex "$CONTENTS"
+
+# Generate index page for the codelists directory
+genindex "$CONTENTS/codelists"
+
+# Copy the CNAME configuration file for GitHub pages
 cp "$SCRIPT_DIR/CNAME" "$CONTENTS/CNAME"
+
+# Publish the build artifacts to the GitHub pages directory
 rm -rf "$SCRIPT_DIR/../$PAGES_DIRNAME"
 mv "$CONTENTS" "$SCRIPT_DIR/../$PAGES_DIRNAME"
 
+# Clean up the build directory
 rm -r "$TMP_DIR"
