@@ -5,13 +5,23 @@ $contents = array_map('trim', file('php://stdin'));
     <head>
     <meta charset="utf-8">
     <title>ONIX online documentation</title>
+    <style>
+footer {
+    font-size: xx-small;
+    font-style: italic;
+    text-align: center;
+}
+    </style>
 </head>
 <body>
-    <h1>Index of contents</h1>
-    <ul>
-        <?php foreach ($contents as $path): ?>
-            <li><a href="<?= htmlspecialchars($path) ?>"><?= htmlspecialchars($path) ?></a></li>
-        <?php endforeach; ?>
-    </ul>
+    <main>
+        <h1>Index of contents</h1>
+        <ul>
+            <?php foreach ($contents as $path): ?>
+                <li><a href="<?= htmlspecialchars($path) ?>"><?= htmlspecialchars($path) ?></a></li>
+            <?php endforeach; ?>
+        </ul>
+    </main>
+    <footer>Built at <?= date(DATE_ATOM) ?>.</footer>
 </body>
 </html>
