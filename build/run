@@ -15,6 +15,7 @@ unzip -d "$TMP_DIR/archive.d" "$TMP_DIR/archive.zip"
 CONTENTS="$(ls -d "$TMP_DIR/archive.d/ONIX_for_Books_Release"*'_html_Best_Practice+codes_Issue_'*)"
 ls "$CONTENTS/" | grep -vE '^index.html$' | php "$SCRIPT_DIR/index.phtml" > "$CONTENTS/index.html"
 
+cp "$SCRIPT_DIR/CNAME" "$CONTENTS/CNAME"
 rm -rf "$SCRIPT_DIR/../$PAGES_DIRNAME"
 mv "$CONTENTS" "$SCRIPT_DIR/../$PAGES_DIRNAME"
 
